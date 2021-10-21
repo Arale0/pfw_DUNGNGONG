@@ -1,0 +1,18 @@
+﻿#pragma once
+#include "Trigger.h"
+#include "GameInfo.h"
+
+class CTriggerTeam : public CTrigger
+{
+public:
+	CTriggerTeam(void);
+	~CTriggerTeam(void);
+
+	void	Update();
+	BOOL	NeedTeamBuild();
+	BOOL	IsFrequencyReadyEx(DWORD dwMiliseconds, DWORD& dwStartTickcount);
+public:
+	DWORD	m_dwStartTime;
+	DWORD	m_dwGoalIDTeamBuild;
+	
+};

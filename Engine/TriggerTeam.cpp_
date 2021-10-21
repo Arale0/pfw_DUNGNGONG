@@ -1,0 +1,44 @@
+﻿#include "TriggerTeam.h"
+#include "main.h"
+#include "GTeamBuild.h"
+
+CTriggerTeam::CTriggerTeam(void)
+{
+	m_dwStartTime = 0;
+	m_dwGoalIDTeamBuild = 0;
+}
+
+CTriggerTeam::~CTriggerTeam(void)
+{
+}
+
+void CTriggerTeam::Update()
+{
+	if (!IsFrequencyReadyEx(1000, m_dwStartTime)) return;
+	//LOG_WRITE("CTriggerTeam::Update..........");
+	
+	
+	if (g_pAutoAI->GetGoalSystem()->IsExistSubGoal(m_dwGoalIDTeamBuild)) return;
+	if(NeedTeamBuild())
+	{
+		m_dwGoalIDTeamBuild = g_pAutoAI->GetGoalSystem()->AddSubGoal(new CGTeamBuild());
+	}
+	
+}
+BOOL CTriggerTeam:NeedTeamBuild(){
+	if(!g_pGame->IsHaveTeam()) return FALSE;
+
+	if(g_pGame->IsTeamLeader()){
+		if(g_pGameControl->IsLeader()) {
+			if(g_pGameControl->IsFullMember(g_pGame->m_Members)){
+				return FALSE;
+			}
+		}
+		return TRUE;
+	}
+
+	if(g_pGameControl->IsRightLeader(g_pGame->m_Members[0].czTeamName)){
+		return FALSE;
+	}
+	return TRUE;
+}
