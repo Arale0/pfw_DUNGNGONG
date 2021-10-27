@@ -7047,3 +7047,13 @@ void CStallSingleSellConfirm::CloseWindow()
 	if (!pfn) return;
 	pfn->Invoke(this);
 }
+
+CStdStringU CStallSingleSellConfirm::m_NumText()
+{
+	static CField* pField = NULL;
+	if (!pField) pField = g_pMono->GetField(IMAGE_ASSEMBLY_CSHARP,"","StallSingleSellConfirm","m_NumText");
+	if (!pField) return CStdStringU("");
+	CUILabel* pLabel = (CUILabel*)pField->GetValueObject(this);
+	if (!pLabel) return CStdStringU("");
+	return CStdStringU(pLabel->get_text()->GetText());
+}

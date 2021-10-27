@@ -19,12 +19,19 @@ public:
 
 	int m_iClicked;
 	int m_iNumSell;
+
 	BOOL m_bFinished;
-	CStdStringU m_czTBD;
-	CStdStringU m_czTCT;
-	CStdStringU m_czItemName;
 	BOOL m_bTradeTBD;
 	BOOL m_bTradeTCT;
+	BOOL m_bTradeEquips;
+	BOOL m_bTradeTinhLinh;
+	BOOL m_bTradeBiKip;
 
+	CStdStringU m_czItemName;
+	CStdStringU m_czTangBaoDo;
+	CStdStringU m_czThienCoTai;
+	CStdStringU m_czTinhLinh;
+	CStdStringU m_czBiKip;
+	CStdStringU m_czTrangBi;
 };
 

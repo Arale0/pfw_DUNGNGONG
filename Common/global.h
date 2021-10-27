@@ -251,6 +251,10 @@ typedef struct _OPTIONTAB {
 	int iPercentGdTBD;
 	int iPercentGdThienCoTai;
 	int iPercentGdVang59;
+	int iPercentGdTinhLinh;
+	int iPercentGdBikip;
+	BOOL checkGdTinhLinh;
+	BOOL checkGdBiKip;
 
 }OPTIONTAB;
 

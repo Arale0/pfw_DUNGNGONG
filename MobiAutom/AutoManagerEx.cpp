@@ -290,6 +290,10 @@ void CAutoManagerEx::SaveGameConfig( CGameInfo* pGame )
 	oOptionTab.AddMember("iPercentGdTBD", pOptionTab->iPercentGdTBD, alt);
 	oOptionTab.AddMember("iPercentGdThienCoTai", pOptionTab->iPercentGdThienCoTai, alt);
 	oOptionTab.AddMember("iPercentGdVang59", pOptionTab->iPercentGdVang59, alt);
+	oOptionTab.AddMember("iPercentGdTinhLinh", pOptionTab->iPercentGdTinhLinh, alt);
+	oOptionTab.AddMember("iPercentGdBikip", pOptionTab->iPercentGdBikip, alt);
+	oOptionTab.AddMember("checkGdBiKip", pOptionTab->checkGdBiKip, alt);
+	oOptionTab.AddMember("checkGdTinhLinh", pOptionTab->checkGdTinhLinh, alt);
 
 	oRoot.AddMember("option", oOptionTab, alt);
 
@@ -636,6 +640,11 @@ void CAutoManagerEx::LoadGameConfig( CGameInfo* pGame )
 		if (oOption.HasMember("iPercentGdTBD")) pOptionTab->iPercentGdTBD = oOption["iPercentGdTBD"].GetInt();
 		if (oOption.HasMember("iPercentGdThienCoTai")) pOptionTab->iPercentGdThienCoTai = oOption["iPercentGdThienCoTai"].GetInt();
 		if (oOption.HasMember("iPercentGdVang59")) pOptionTab->iPercentGdVang59 = oOption["iPercentGdVang59"].GetInt();
+
+		if (oOption.HasMember("iPercentGdTinhLinh")) pOptionTab->iPercentGdTinhLinh = oOption["iPercentGdTinhLinh"].GetInt();
+		if (oOption.HasMember("iPercentGdBikip")) pOptionTab->iPercentGdBikip = oOption["iPercentGdBikip"].GetInt();
+		if (oOption.HasMember("checkGdBiKip")) pOptionTab->checkGdBiKip = oOption["checkGdBiKip"].GetInt();
+		if (oOption.HasMember("checkGdTinhLinh")) pOptionTab->checkGdTinhLinh = oOption["checkGdTinhLinh"].GetInt();
 
 
 		//pGame->m_bSyncOptionTab = TRUE;

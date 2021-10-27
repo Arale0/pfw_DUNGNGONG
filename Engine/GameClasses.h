@@ -1127,6 +1127,7 @@ public:
 	CKnapsackItem *m_Item();
 
 	int m_NowMoney();
+	CStdStringU m_NumText();
 	void CloseWindow();
 };
 

@@ -10,7 +10,15 @@ CGBayBanTheoDeNghi::CGBayBanTheoDeNghi() :CGActivity()
 	m_bFinished = FALSE;
 	m_bTradeTBD = TRUE;
 	m_bTradeTCT = TRUE;
-	m_czItemName = u"None";
+	m_bTradeEquips = TRUE;
+	m_bTradeTinhLinh = TRUE;
+	m_bTradeBiKip = TRUE;
+	m_czItemName		= u"None";
+	m_czTangBaoDo		= u"Tàng Bảo Đồ";
+	m_czThienCoTai		= u"Thiên Cơ Tài";
+	m_czTinhLinh		= u"Tinh Linh";
+	m_czBiKip			= u"Bí Kíp";
+	m_czTrangBi			= u"Trang Bị";
 	_theApp->m_pEpoll->Sync_ActivityStatus(m_activity,ast_doing);
 }
 
@@ -42,8 +50,8 @@ int CGBayBanTheoDeNghi::Process()
 		}
 		LOG_WRITE("CGBayBanTheoDeNghi::Process()....0");
 		if (isTradeTooMany(m_czItemName)) return LoopNextSleep();
-		if (isStallSellMultiConfirm()) return LoopNextSleep();
-		if (isStallSellSingleConfirm()) return LoopNextSleep();
+		if (isStallSellMultiConfirm()) return LoopNextSleep(200);
+		if (isStallSellSingleConfirm()) return LoopNextSleep(200);
 
 		if (isShopWnd()) return LoopNextSleep();
 
@@ -99,7 +107,7 @@ BOOL CGBayBanTheoDeNghi::isStallSell()
 {
 	CStallSell *pIns = CStallSell::Instance();
 	if (pIns) {
-		_LIST_GIAODICH *pGiaoDich = &g_pGame->m_lstGiaoDich;
+		OPTIONTAB *pTab = &g_pGame->m_OptionTab;
 		int iVang59Per = g_pGame->m_OptionTab.iPercentGdVang59;
 		CSYS_List *pItemChoosed = pIns->m_StallSellListItemList();
 		int iCountChoosed = pItemChoosed->get_Count();
@@ -126,7 +134,7 @@ BOOL CGBayBanTheoDeNghi::isStallSell()
 					int iStackCount = gameItem->get_StackCount();
 					int iLevel = gameItem->GetEquipLevel();
 					
-					if (bIsEquipment && iLevel <= 59 && iVang59Per != 11) {
+					if (bIsEquipment && iLevel <= 59 && iVang59Per != 11 && m_bTradeEquips) {
 						LOG_WRITE("Clicked [%s]", czNameA.c_str());
 						m_iNumSell = iStackCount;
 						pIns->ConfirmSellItem(gameItem);
@@ -146,7 +154,20 @@ BOOL CGBayBanTheoDeNghi::isStallSell()
 						pIns->ConfirmSellItem(gameItem);
 						return TRUE;
 					}
-	
+
+					if (czNameA.Find("Bí Kíp") >= 0 && pTab->checkGdBiKip && m_bTradeBiKip) {
+						LOG_WRITE("Clicked [%s]", czNameA.c_str());
+						m_iNumSell = iStackCount;
+						pIns->ConfirmSellItem(gameItem);
+						return TRUE;
+					}
+
+					if (czNameA.Find("Tinh Linh") >= 0 && pTab->checkGdTinhLinh && m_bTradeTinhLinh) {
+						LOG_WRITE("Clicked [%s]", czNameA.c_str());
+						m_iNumSell = iStackCount;
+						pIns->ConfirmSellItem(gameItem);
+						return TRUE;
+					}
 
 				}
 				//else LOG_WRITE("[%08X][%d] -- [%s][%d]count", gameItem, bIsEquipment, _U2A(czName).c_str(), iStackCount);
@@ -179,6 +200,8 @@ BOOL CGBayBanTheoDeNghi::isStallSellMultiConfirm()
 	if (pIns) {
 		int iTBDPer = g_pGame->m_OptionTab.iPercentGdTBD;
 		int iThienCoTaiPer = g_pGame->m_OptionTab.iPercentGdThienCoTai;
+		int iTinhLinhPer = g_pGame->m_OptionTab.iPercentGdTinhLinh;
+		int iBiKipPer = g_pGame->m_OptionTab.iPercentGdBikip;
 		//int iVang59Per = &g_pGame->m_OptionTab.iPercentGdVang59;
 
 		CKnapsackItem *pItem = pIns->m_Item();
@@ -190,19 +213,35 @@ BOOL CGBayBanTheoDeNghi::isStallSellMultiConfirm()
 
 		if (m_iNumSell == 0) pIns->CloseWindow();
 
-		if (czName.Find(u"Tàng Bảo Đồ") >= 0) {
-			m_czItemName = czName;
+		if (czName.Find(m_czTangBaoDo) >= 0) {
+			m_czItemName = m_czTangBaoDo;
 			LOG_WRITE("--- [%s] indexPercent[%d]", _U2A(czName).c_str(), iTBDPer);
 			SellItemWithPercent( index, iTBDPer);
 			return TRUE;
 		}
 
-		if (czName.Find(u"Thiên Cơ Tài") >= 0) {
-			m_czItemName = czName;
+		if (czName.Find(m_czThienCoTai) >= 0) {
+			m_czItemName = m_czThienCoTai;
 			LOG_WRITE("--- [%s] indexPercent[%d]", _U2A(czName).c_str(), iThienCoTaiPer);
 			SellItemWithPercent( index, iThienCoTaiPer);
 			return TRUE;
 		}
+
+		if (czName.Find(m_czTinhLinh) >= 0) {
+			m_czItemName = m_czTinhLinh;
+			LOG_WRITE("--- [%s] indexPercent[%d]", _U2A(czName).c_str(), iThienCoTaiPer);
+			SellItemWithPercent( index, iTinhLinhPer);
+			return TRUE;
+		}
+
+		if (czName.Find(m_czBiKip) >= 0) {
+			m_czItemName = m_czBiKip;
+			LOG_WRITE("--- [%s] indexPercent[%d]", _U2A(czName).c_str(), iThienCoTaiPer);
+			SellItemWithPercent( index, iBiKipPer);
+			return TRUE;
+		}
+
+		pIns->CloseWindow();
 
 		return TRUE;
 	}
@@ -213,9 +252,16 @@ BOOL CGBayBanTheoDeNghi::isStallSellSingleConfirm()
 {
 	CStallSingleSellConfirm *pIns = CStallSingleSellConfirm::Instance();
 	if (pIns) {
+		CStdStringU czNumText = pIns->m_NumText();
+		if (czNumText.Compare(u"999") == 0) {
+			pIns->CloseWindow();
+			return TRUE;
+		}
+
 		int iVang59Per = g_pGame->m_OptionTab.iPercentGdVang59;
 		int index = pIns->m_StepCount();
 		LOG_WRITE("StepCount = %d", iVang59Per);
+		m_czItemName = u"Trang Bị";
 		SellItemWithPercent(index, iVang59Per, TRUE);
 		return TRUE;
 	}
@@ -360,12 +406,15 @@ BOOL CGBayBanTheoDeNghi::isTradeTooMany(CStdStringU czName)
 				if (g_pGameControl->IsShowTransform(pChild)) {
 					CStdStringU czLabel = g_pGameControl->GetTextU(pChild);
 					if (czLabel.Find(czName) >= 0) {
-						if (m_czItemName.Find(u"Tàng Bảo Đồ") >= 0) m_bTradeTBD = FALSE;
-						if (m_czItemName.Find(u"Thiên Cơ Tài") >= 0) m_bTradeTBD = FALSE;
+						if (m_czItemName.Find(m_czTangBaoDo) >= 0)	m_bTradeTBD = FALSE;
+						if (m_czItemName.Find(m_czThienCoTai) >= 0) m_bTradeTBD = FALSE;
+						if (m_czItemName.Find(m_czTrangBi) >= 0)	m_bTradeEquips = FALSE;
+						if (m_czItemName.Find(m_czTinhLinh) >= 0)	m_bTradeTinhLinh = FALSE;
+						if (m_czItemName.Find(m_czBiKip) >= 0)		m_bTradeBiKip = FALSE;
+
 						LOG_WRITE("Is Right Notice..... [%s]", _U2A(czLabel).c_str());
 						return TRUE;
 					}
-					//LOG_WRITE("Notice  [%s]", _U2A(czLabel).c_str());
 				}
 			}
 		}
